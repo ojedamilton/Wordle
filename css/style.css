@@ -50,7 +50,7 @@ a {
 
 
 body {
-    background-color: rgb(245, 245, 245);
+    background-color: rgb(23, 32, 42 );
     min-height: 100%;
     margin: 0;
     padding: 1rem;
@@ -114,7 +114,48 @@ body {
     justify-content: center;
     align-items: center;
 }
+.tile[data-state="active"] {
+    border-color: hsl(200, 1%, 34%);
+}
   
+.tile[data-state="wrong"] {
+    border: none;
+    background-color: hsl(240, 2%, 23%);
+}
+  
+.tile[data-state="wrong-location"] {
+    border: none;
+    background-color: hsl(49, 51%, 47%);
+}
+  
+.tile[data-state="correct"] {
+    border: none;
+    background-color: hsl(115, 29%, 43%);
+}
+  
+.tile.shake {
+    animation: shake 250ms ease-in-out;
+}
+  
+.tile.dance {
+    animation: dance 500ms ease-in-out;
+}
+  
+.tile.flip {
+    transform: rotateX(90deg);
+}   
+.key.wrong {
+    background-color:rgb(57, 57, 60) 
+}
+  
+.key.wrong-location {
+    background-color: rgb(194, 178, 104)
+}
+  
+.key.correct {
+    background-color: rgb(23, 136, 44 );
+}
+
 footer {
     background: rgb(36, 113, 163 );;
     width: 100%;
@@ -148,3 +189,36 @@ footer .social a {
     padding: 10px;
     display: inline-block;
 }  
+
+.alert-container {
+    position: fixed;
+    top: 10vh;
+    left: 50vw;
+    transform: translateX(-50%);
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .alert {
+    pointer-events: none;
+    background-color: hsl(204, 7%, 85%);
+    padding: .75em;
+    border-radius: .25em;
+    opacity: 1;
+    transition: opacity 500ms ease-in-out;
+    margin-bottom: .5em;
+  }
+  
+  .alert:last-child {
+    margin-bottom: 0;
+  }
+  
+  .alert.hide {
+    opacity: 0;
+  }
+  *, *::after, *::before {
+    box-sizing: border-box;
+    font-family: Arial;
+  }
