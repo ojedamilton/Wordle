@@ -1,12 +1,14 @@
-//import saludar from "./anidado";
+import {paddedFormat,startCountDown,formatDate} from "./timer.js";
 
-window.onload= function() {
+window.onload= function() { // usar refer en etiqueta scrip t para cargar luego del DOM
 
-
+    localStorage.removeItem('name')
     /// DECLARACION DE CONSTANTES /////////// 
-    const enviar = document.querySelector('#play');
+    const play = document.querySelector('#play');
     const wordsArray=[];
     const wordWin=[];
+    const rr= [];
+    const arrPartidas =[];
     const keyboard = document.querySelector("[data-keyboard]")
     const guessGrid = document.querySelector("[data-guess-grid]") // obtengo la grilla
     const alertContainer = document.querySelector("[data-alert-container]") // contenedor alert msg
@@ -22,11 +24,118 @@ window.onload= function() {
     ////// Funciones aplicadas a la Api
     const eliminarTildes   = texto => texto.normalize('NFD').replace(/[\u0300-\u036f]/g,"");
     const obtenerRandomInt = max   =>  Math.floor(Math.random() * max);
-    enviar.addEventListener('click',()=> this.wordWin=this.wordsArray[obtenerRandomInt(SEARCH_TOTAL)])
+    play.addEventListener('click',()=>{ 
+          this.wordWin=this.wordsArray[obtenerRandomInt(SEARCH_TOTAL)]
+          const ww = this.wordWin.split('')
+          this.rr = ww.reduce((acc,elem)=>{
+                                    if (acc[elem]) {
+                                        acc[elem]++ 
+                                    }else{
+                                    acc[elem]=1
+                                    } 
+                                    return acc   
+
+                                   },{});
+
+        mostrarModal(); 
+                                   
+    });          
+    /////////// TIMER  COUNTDOWN ///////                        
+
+    let time_minutes = 5; 
+    let time_seconds = 0; 
+
+    let duration = time_minutes * 60 + time_seconds;
+
+    let element = document.querySelector('#count-down-timer');
+    var timer = document.querySelector('#timer')
+    timer.style.display='none';
+    element.textContent = `${paddedFormat(time_minutes)}:${paddedFormat(time_seconds)}`;
+
+    /// INGRESAR NOMBRE /////////
+    const comenzarPartida = ()=> {
+                    const name = document.querySelector("#name");
+                    if (!name.value) {   
+                        return false
+                    }
+                    // almaceno nombre el LocalStorage
+                    localStorage.setItem('name',name.value)
+                    const modal = document.querySelector("#modalPartidas");
+                    modal.style.display='none'
+                    timer.style.display='block'
+                    startInteraction();
+                    startCountDown(--duration, element);
+                };
+
+    const go = document.querySelector("#go");
+    go.addEventListener('click',comenzarPartida);
+
+    ////////// GUARDAR PARTIDA //////////
+    const guardarPartida = ()=>{
+        const getName = localStorage.getItem('name');
+        if (!getName) return showAlert('Inicie una partida')
+        var totalSave= document.querySelectorAll('[data-letter]')
+        const mapeo = [...totalSave].map((e)=>{
+                      return {...e.dataset}    
+        },[]); 
+        // creo clase para reutilizar
+        class nuevaPartida {
+            constructor(date,name,tablero,wordw) {
+              this.date = date;
+              this.name = name;
+              this.tablero = tablero;
+              this.wordw = wordw;
+            }
+          }
+        // Instancio el objeto 
+        const nuevaP = new nuevaPartida(formatDate(new Date()),getName,mapeo,this.wordWin)
+        // voy almancenando cada objeto en LS
+        arrPartidas.push(nuevaP)
+        // Seteo al Local Storage
+        const mapeoStringify = JSON.stringify(arrPartidas)
+        const lsArray= localStorage.setItem('lsArray2',mapeoStringify)
+    }  
+
+    const save = document.querySelector('#save');
+    save.addEventListener('click',guardarPartida)
+
+     const cargarPartidas = ()=>{
+        const print =document.querySelectorAll('[data-guess-grid]')[0].children
+        // cuando vuelve del LS
+        const getLsArray = localStorage.getItem('lsArray')
+        const parseArray = JSON.parse(getLsArray)
+        for (let i = 0; i < parseArray.length; i++) { 
+            print[i].textContent=parseArray[i].letter
+            print[i].dataset.letter=parseArray[i].letter
+            print[i].dataset.state=parseArray[i].state
+            startInteraction();
+        }
+
+     }
+    const partidas = document.querySelector('#score');
+    partidas.addEventListener('click',cargarPartidas) 
+
+    //////////// MODAL  ////////////////
     
+    function mostrarModal() {
+       
+        const modal = document.querySelector("#modalPartidas");
+        const span = document.querySelector("#close");
+        modal.style.display = "block";
+        span.onclick = function () {
+            modal.style.display = "none";
+        }
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    }
+   
+
     /////////////////////////////// HANDLERS //////////////////////////////////////////////////////
-  //  saludar('milton');
     const handleMouseClick=(e)=>{
+    
                                 if (e.target.matches("[data-key]")) {
                                     // le envio el valor(letra) que tengo guardado en el data-key
                                     pressKey(e.target.dataset.key)
@@ -34,7 +143,8 @@ window.onload= function() {
                                 }
                                 if (e.target.matches("[data-enter]")) {
                                     // envio el palabra 
-                                    submitGuess()
+                                   
+                                    submitGuess(this.wordsArray)
                                     return
                                 }
                                 if (e.target.matches("[data-delete]")) {
@@ -45,7 +155,8 @@ window.onload= function() {
     const handleKeyPress=(e)=> 
                             {
                                 if (e.key === "Enter") {
-                                    submitGuess()
+                                    
+                                    submitGuess(this.wordsArray,this.wordWin)
                                     return
                                 }
                                 if (e.key === "Backspace" || e.key === "Delete") {
@@ -68,7 +179,7 @@ window.onload= function() {
                                    document.removeEventListener("keydown", handleKeyPress)}                  
 
     //Inicializo capturando los eventos de CLICK y TECLADO
-    startInteraction();
+    // startInteraction(); // INICIALIZADOR
     /// FUNCIONES LLAMADAS DESDE EL NAVEGADOR
 
     // obtengo un Nodelist de los div activos  
@@ -95,8 +206,10 @@ window.onload= function() {
                             nextTile.dataset.state = "active"  // aca lo activo por 1ra vez
                         } 
 
-    function submitGuess() 
+    function submitGuess(warr,ww) 
                         {
+                            //console.log(ww)
+                            //debugger 
                             const activeTilesDiv = [...getActiveDiv()] //clono elementos (1er nivel) y lo meto en un array
                             //console.log([...getActiveDiv()])
                             if (activeTilesDiv.length !== WORD_LENGTH) { // si es distinto de 5 
@@ -110,19 +223,26 @@ window.onload= function() {
                                 return wordAcum + divCurrent.dataset.letter
                             }, "")
                             // chequeo que exista esa palabra en mi array
-                            if (!this.wordsArray.includes(palabra)) {
+                            if (!warr.includes(palabra)) {
                                 showAlert("No Esta esa Palabra")
                                 shakeTiles(activeTilesDiv)
                                 return
                             }
                         
                             stopInteraction();
+            
                             //forEach(currentValue,index, array)
-                            activeTilesDiv.forEach((...params) => flipTile(...params, palabra))
+                            activeTilesDiv.forEach((...params) => flipTile(...params, palabra,ww))
                         
                         }
-    function flipTile(div, index, array, guess) 
+
+
+    
+    function flipTile(div, index, array, palabra,ww) 
     {
+       
+        //console.log(ww)
+        //debugger
         const letter = div.dataset.letter
         const key = keyboard.querySelector(`[data-key="${letter}"i]`)
         setTimeout(() => {
@@ -130,11 +250,14 @@ window.onload= function() {
         }, (index * FLIP_ANIMATION_DURATION) / 2)
     
         div.addEventListener("transitionend",() => {
+                                                //console.log(cantRepeat)  
+                                              
                                                 div.classList.remove("flip")
-                                                if (this.wordWin[index] === letter) {
+                                                if (ww[index] === letter) {
                                                 div.dataset.state = "correct"
+                                                //this.rr[letter] = this.rr[letter]-1
                                                 key.classList.add("correct")
-                                                } else if (this.wordWin.includes(letter)) {
+                                                } else if (ww.includes(letter) ) { //&& this.rr[letter]!=0
                                                 div.dataset.state = "wrong-location"
                                                 key.classList.add("wrong-location")
                                                 } else {
@@ -144,17 +267,18 @@ window.onload= function() {
                                         
                                                 if (index === array.length - 1) {
                                                     div.addEventListener("transitionend",() => {startInteraction()
-                                                                                                checkWinLose(guess, array)
+                                                                                                checkWinLose(palabra, array,ww)
                                                                                                 }, { once: true }
                                                                     )
                                                 }
                                             },{ once: true }
-                            )
+                            ) 
+                            //console.log(cantRepeat)                  
     }                    
      
-    function checkWinLose(guess, tiles) 
+    function checkWinLose(guess, tiles,ww) 
     {
-        if (guess === this.wordWin) {
+        if (guess === ww) {
             showAlert("You Win", 5000)
             danceTiles(tiles)
             stopInteraction()
@@ -163,7 +287,7 @@ window.onload= function() {
     
         const remainingTiles = guessGrid.querySelectorAll(":not([data-letter])")
         if (remainingTiles.length === 0) {
-            showAlert(this.wordWin.toUpperCase(), null)
+            showAlert(ww.toUpperCase(), null)
             stopInteraction()
         }
     }

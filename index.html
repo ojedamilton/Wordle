@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="./css/reseter.css">
         <link rel="stylesheet" href="./css/style.css">
-        <script  src="./js/wordle.js"></script>
+        <script type="module" src="./js/wordle.js"></script>
         <!-- <script src="./js/anidado.js"></script> -->
         <title>Wordle-Final</title>
     </head>
@@ -17,11 +17,28 @@
         </div>
         <div class="nav-btn">
             <button id="play">Jugar</button>
-            <button id="options">Opciones</button>
-            <button id="score">Puntaje</button>
+            <button id="save">Guardar</button>
+            <button id="score">Partidas</button>
         </div>
     </header>
     <body>
+    <!-- Modal -->
+    <div id="modalPartidas" class="modal">
+        <div class="modal_content">
+            <div class="modal-header">
+                <span class="close" id="close">&times;</span>
+            </div>    
+            <div id="table-wrapper">    
+                <div id="table-scroll">
+                   <input class="input-form" id="name" placeholder="Introduzca su nombre" type="text">
+                </div>
+            </div>
+            <p class="modal_close" id="go">Comenzar</p>
+        </div>
+    </div>
+        <div id="timer">
+            <h1 class="text-center" id="count-down-timer"></h1>
+        </div>
         <div class="alert-container" data-alert-container></div>
         <div data-guess-grid class="guess-grid">
           <div class="tile"></div>
