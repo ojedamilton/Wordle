@@ -1,7 +1,7 @@
 import {paddedFormat,startCountDown,formatDate} from "./timer.js";
 
-window.onload= function() { // usar refer en etiqueta scrip t para cargar luego del DOM
-
+window.onload= function() { // usar refer en etiqueta script para cargar luego del DOM
+    
     localStorage.removeItem('name')
     /// DECLARACION DE CONSTANTES /////////// 
     const play = document.querySelector('#play');
@@ -37,90 +37,145 @@ window.onload= function() { // usar refer en etiqueta scrip t para cargar luego 
 
                                    },{});
 
-        mostrarModal(); 
+        mostrarModal('modalWelcome'); 
                                    
-    });          
+    });   
+    
+   
     /////////// TIMER  COUNTDOWN ///////                        
 
     let time_minutes = 5; 
     let time_seconds = 0; 
 
     let duration = time_minutes * 60 + time_seconds;
+    let elementCountDown = document.querySelector('#count-down-timer');
+    elementCountDown.textContent = `${paddedFormat(time_minutes)}:${paddedFormat(time_seconds)}`;
+    //element.addEventListener('DOMCharacterDataModified',()=>console.log('cambianding'))
 
-    let element = document.querySelector('#count-down-timer');
-    var timer = document.querySelector('#timer')
-    timer.style.display='none';
-    element.textContent = `${paddedFormat(time_minutes)}:${paddedFormat(time_seconds)}`;
+      ////////////////////////////
+     /////////// JUGAR  /////////
+    ////////////////////////////
 
-    /// INGRESAR NOMBRE /////////
     const comenzarPartida = ()=> {
+                    stopInteraction();
                     const name = document.querySelector("#name");
                     if (!name.value) {   
                         return false
                     }
                     // almaceno nombre el LocalStorage
                     localStorage.setItem('name',name.value)
-                    const modal = document.querySelector("#modalPartidas");
+                    const modal = document.querySelector("#modalWelcome");
                     modal.style.display='none'
-                    timer.style.display='block'
+                    elementCountDown.classList.remove('text-hidden')
+                    elementCountDown.classList.add('text-show')
                     startInteraction();
-                    startCountDown(--duration, element);
+                    startCountDown(--duration, elementCountDown);
+                   
+                    
                 };
 
     const go = document.querySelector("#go");
     go.addEventListener('click',comenzarPartida);
 
+     /////////////////////////////////////
     ////////// GUARDAR PARTIDA //////////
+    ////////////////////////////////////
+ 
+    class nuevaPartida {
+        constructor(date,name,tablero,wordw,timer) {
+            this.date = date;
+            this.name = name;
+            this.tablero = tablero;
+            this.wordw = wordw;
+            this.timer = timer;
+
+        }
+    }
     const guardarPartida = ()=>{
         const getName = localStorage.getItem('name');
+        const getTimer = elementCountDown.textContent; 
         if (!getName) return showAlert('Inicie una partida')
         var totalSave= document.querySelectorAll('[data-letter]')
         const mapeo = [...totalSave].map((e)=>{
                       return {...e.dataset}    
         },[]); 
-        // creo clase para reutilizar
-        class nuevaPartida {
-            constructor(date,name,tablero,wordw) {
-              this.date = date;
-              this.name = name;
-              this.tablero = tablero;
-              this.wordw = wordw;
-            }
-          }
         // Instancio el objeto 
-        const nuevaP = new nuevaPartida(formatDate(new Date()),getName,mapeo,this.wordWin)
+        const nuevaP = new nuevaPartida(formatDate(new Date()),getName,mapeo,this.wordWin,getTimer)
         // voy almancenando cada objeto en LS
         arrPartidas.push(nuevaP)
         // Seteo al Local Storage
         const mapeoStringify = JSON.stringify(arrPartidas)
         const lsArray= localStorage.setItem('lsArray2',mapeoStringify)
+        showAlert('Partida Guardada')
     }  
-
+     
     const save = document.querySelector('#save');
     save.addEventListener('click',guardarPartida)
 
-     const cargarPartidas = ()=>{
-        const print =document.querySelectorAll('[data-guess-grid]')[0].children
-        // cuando vuelve del LS
-        const getLsArray = localStorage.getItem('lsArray')
+      //////////////////////////////////////////
+     /////////   CARGAR PARTIDAS  /////////////
+    //////////////////////////////////////////
+
+
+    const cargarModalPartidas = ()=>{
+        const rellenarTable =document.querySelectorAll('[data-guess-grid]')[0].children
+        const tbody= document.querySelector('#puntajes');
+        const getLsArray = localStorage.getItem('lsArray2')
         const parseArray = JSON.parse(getLsArray)
-        for (let i = 0; i < parseArray.length; i++) { 
-            print[i].textContent=parseArray[i].letter
-            print[i].dataset.letter=parseArray[i].letter
-            print[i].dataset.state=parseArray[i].state
-            startInteraction();
-        }
+        let tr='';
+        parseArray.map((elem,ind)=>{
+           tr+=`<tr class="fila-partidas-guardadas" role="row">
+                    <td class="data-partida-guardadas" data-index="${ind}">${ind+1}</td>
+                    <td class="data-partida-guardadas" data-label="nombre">${elem.name}</td>
+                    <td class="data-partida-guardadas" data-label="fecha">${elem.date}</td>
+                 </tr>`;
 
-     }
-    const partidas = document.querySelector('#score');
-    partidas.addEventListener('click',cargarPartidas) 
+        });
+        tbody.innerHTML=tr;
+        mostrarModal('modalPartidas'); 
+        const modal = document.querySelector('#modalPartidas');
+        const trFila = document.querySelectorAll('[data-index]');
+        trFila.forEach(element => { 
+            element.addEventListener('click',(e)=> {
+                            const ind = e.target.dataset.index;
+                            this.wordWin=parseArray[ind].wordw; 
+                            localStorage.setItem('name',parseArray[ind].name) 
+                            let parseTime =parseArray[ind].timer
+                            let spl = parseTime.split(":")
+                            let min = parseInt(spl[0])
+                            let sec = parseInt(spl[1])
+                            let durationSave = min * 60 + sec;
+                            elementCountDown.classList.remove('text-hidden')
+                            elementCountDown.classList.add('text-show')
+                            elementCountDown.textContent = `${paddedFormat(min)}:${paddedFormat(sec)}`;
+                            startCountDown(--durationSave, elementCountDown);
 
-    //////////// MODAL  ////////////////
+                            for (let i = 0; i < parseArray[ind].tablero.length; i++) { 
+                                //debugger
+                                rellenarTable[i].textContent=parseArray[ind].tablero[i].letter
+                                rellenarTable[i].dataset.letter=parseArray[ind].tablero[i].letter
+                                rellenarTable[i].dataset.state=parseArray[ind].tablero[i].state
+                            }
+                            startInteraction();
+                            modal.style.display = "none";
+                        }); 
+        });
+
+        const back = document.querySelector('#back')
+        back.addEventListener('click',()=> modal.style.display='none')
+    }
+
+    const partidas = document.querySelector('#score'); 
+    partidas.addEventListener('click',cargarModalPartidas) 
     
-    function mostrarModal() {
+      ////////////////////////////////////////
+     ////////////     MODAL  ////////////////
+    ////////////////////////////////////////
+    
+    function mostrarModal(nameModal) {
        
-        const modal = document.querySelector("#modalPartidas");
-        const span = document.querySelector("#close");
+        const modal = document.querySelector(`#${nameModal}`); 
+        const span = document.querySelector(".close");
         modal.style.display = "block";
         span.onclick = function () {
             modal.style.display = "none";
@@ -306,6 +361,7 @@ window.onload= function() { // usar refer en etiqueta scrip t para cargar luego 
             }, (index * DANCE_ANIMATION_DURATION) / 5)
         })
     }
+    
     function showAlert(message, duration = 1000) 
     {
         const alertDiv = document.createElement("div")
@@ -321,7 +377,6 @@ window.onload= function() { // usar refer en etiqueta scrip t para cargar luego 
             })
         }, duration)
     }
-
     function shakeTiles(divs) 
     {
         divs.forEach(div => {

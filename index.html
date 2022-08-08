@@ -22,8 +22,8 @@
         </div>
     </header>
     <body>
-    <!-- Modal -->
-    <div id="modalPartidas" class="modal">
+    <!-- Welcome Modal  -->
+    <div id="modalWelcome" class="modal">
         <div class="modal_content">
             <div class="modal-header">
                 <span class="close" id="close">&times;</span>
@@ -36,9 +36,30 @@
             <p class="modal_close" id="go">Comenzar</p>
         </div>
     </div>
-        <div id="timer">
-            <h1 class="text-center" id="count-down-timer"></h1>
+     <!-- Partidas Modal  -->
+    <div id="modalPartidas" class="modal">
+        <div class="modal_content">
+            <div class="modal-header">
+                <span class="close" id="close">&times;</span>
+            </div>    
+            <div id="table-scroll">
+                <table id="tabla">
+                    <thead>
+                        <tr id="tr-partidas">
+                            <th id="numero-partida" style="display: table-cell;">Partida</th>
+                            <th>Nombre</th>
+                            <th id="orden-por-fecha">Fecha</th>
+                            <th id="orden-por-puntaje" style="display: none;">Puntaje ↓</th>
+                        </tr>
+                    </thead>
+                    <tbody id="puntajes">
+                    </tbody>
+                </table>
+            </div>
+            <p class="modal_close" id="back">Volver</p>
         </div>
+    </div>
+        <div class="text-hidden" id="count-down-timer"></div>
         <div class="alert-container" data-alert-container></div>
         <div data-guess-grid class="guess-grid">
           <div class="tile"></div>

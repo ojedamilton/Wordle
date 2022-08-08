@@ -311,7 +311,30 @@ footer .social a {
     transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }
 
-#timer{
+.text-show{
     display:flex;
     justify-content: center;
+    color:white;
 }
+.text-hidden{
+    display: none;
+}
+
+th, td {
+    padding: 5px;
+    color: white;
+    border-bottom: 2px solid #3a3a3c;
+}
+#orden-por-fecha {
+    cursor: pointer;
+}
+
+#orden-por-puntaje {
+    cursor: pointer;
+}
+
+.data-partida-guardadas:hover{
+    background-color: grey;
+    cursor: pointer;
+}
+

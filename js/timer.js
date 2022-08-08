@@ -1,5 +1,6 @@
  //// TIMER /////
 export function paddedFormat(num) {
+
     return num < 10 ? "0" + num : num; 
 }
 
@@ -15,9 +16,9 @@ export function startCountDown(duration, element) {
         sec = parseInt(secondsRemaining % 60);
 
         element.textContent = `${paddedFormat(min)}:${paddedFormat(sec)}`;
-
         secondsRemaining = secondsRemaining - 1;
         if (secondsRemaining < 0) { clearInterval(countInterval) };
+        //if (element.textContent=='00:00') console.log('You lose it');      
 
     }, 1000);
 }
