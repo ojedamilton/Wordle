@@ -1,6 +1,6 @@
 import {paddedFormat,startCountDown,formatDate} from "./timer.js";
 
-window.onload= function() { // usar refer en etiqueta script para cargar luego del DOM
+window.onload= function() { 
     
     localStorage.removeItem('name')
     const arrPartidas = localStorage.getItem('lsArray2')?JSON.parse(localStorage.getItem('lsArray2')):[];
@@ -11,8 +11,8 @@ window.onload= function() { // usar refer en etiqueta script para cargar luego d
     const rr= [];
     const participante=document.querySelector('#participante');
     const keyboard = document.querySelector("[data-keyboard]")
-    const guessGrid = document.querySelector("[data-guess-grid]") // obtengo la grilla
-    const alertContainer = document.querySelector("[data-alert-container]") // contenedor alert msg
+    const guessGrid = document.querySelector("[data-guess-grid]") 
+    const alertContainer = document.querySelector("[data-alert-container]") 
     const WORD_LENGTH = 5
     const SEARCH_TOTAL = 1000
     const FLIP_ANIMATION_DURATION = 500
@@ -195,7 +195,6 @@ window.onload= function() { // usar refer en etiqueta script para cargar luego d
                     e.removeAttribute("data-state")
                  })
     } 
-    /// LIMPIAR TECLADO ///
     
     const temporizador =`<div class="text-hidden" id="timer">
                             <h2>Bienvenido 
@@ -234,7 +233,7 @@ window.onload= function() { // usar refer en etiqueta script para cargar luego d
                                     return
                                 }
                                 if (e.target.matches("[data-enter]")) {  
-                                    submitGuess(this.wordsArray)
+                                    submitGuess(this.wordsArray,this.wordWin)
                                     return
                                 }
                                 if (e.target.matches("[data-delete]")) {
@@ -294,7 +293,7 @@ window.onload= function() { // usar refer en etiqueta script para cargar luego d
                         {
                           
                             const activeTilesDiv = [...getActiveDiv()] //clono elementos (1er nivel) y lo meto en un array
-                            if (activeTilesDiv.length !== WORD_LENGTH) { // si es distinto de 5 
+                            if (activeTilesDiv.length !== WORD_LENGTH) { 
                                 showAlert("No Hay Suficientes letras")
                                 shakeTiles(activeTilesDiv)
                                 return
@@ -303,7 +302,7 @@ window.onload= function() { // usar refer en etiqueta script para cargar luego d
                             const palabra = activeTilesDiv.reduce((wordAcum, divCurrent) => {
                                 return wordAcum + divCurrent.dataset.letter
                             }, "")
-                            // chequeo que exista esa palabra en mi array
+                            
                             if (!warr.includes(palabra)) {
                                 showAlert("No Esta esa Palabra")
                                 shakeTiles(activeTilesDiv)
@@ -328,9 +327,8 @@ window.onload= function() { // usar refer en etiqueta script para cargar luego d
                                                 div.classList.remove("flip")
                                                 if (ww[index] === letter) {
                                                 div.dataset.state = "correct"
-                                                //this.rr[letter] = this.rr[letter]-1
                                                 key.classList.add("correct")
-                                                } else if (ww.includes(letter) ) { //&& this.rr[letter]!=0
+                                                } else if (ww.includes(letter) ) { 
                                                 div.dataset.state = "wrong-location"
                                                 key.classList.add("wrong-location")
                                                 } else {
@@ -352,19 +350,19 @@ window.onload= function() { // usar refer en etiqueta script para cargar luego d
     function checkWinLose(guess, tiles,ww) 
     {
         if (guess === ww) {
-            showAlert("Ganaste !", 5000)
+            showAlert("Ganaste !", 3000)
             stopInteraction()
             divTimerr.remove()
-            cleaning()
+            setTimeout(()=>location.assign('./index.html'),1000)
             return
         }
     
         const remainingTiles = guessGrid.querySelectorAll(":not([data-letter])")
         if (remainingTiles.length === 0) {
-            showAlert('Perdiste , palabra ganadora es: '+ww.toUpperCase(), 5000)
+            showAlert('Perdiste , palabra ganadora es: '+ww.toUpperCase(), 3000)
             stopInteraction()
             divTimerr.remove()
-            cleaning()
+            setTimeout(()=>{location.assign('./index.html')},1000)
             return
         }
     }
