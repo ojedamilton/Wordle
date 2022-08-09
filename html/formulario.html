@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../css/reseter.css">
+        <link rel="stylesheet" href="../css/formulario/form.css">
+        <script src="../js/formulario/validaciones.js"></script>
+        <title>Contacto</title>
+    </head>
+    <header>
+        <div class="header">
+            <h1>FORMULARIO</h1>
+        </div>
+        <nav>
+            <a href="../index.html">Home</a>
+        </nav>
+    </header>
+    <body>
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Formulario de Registro</h3>
+            </div>
+            <form class="form-body"  action="" id="formulario" method="get"> 
+                <div class="card-body">
+                    <div class="form-input">
+                        <label class="lbl" for="nombre">Nombre</label>
+                        <input type="text" class="input-form"   placeholder="Texto corto no menor a 3 letras" id="nombre">
+                        <p class="errorNombre" id="errorNombre" style="display:none;color: red;" >Error</p>
+                    </div>
+                    <div class="form-input">
+                        <label class="lbl" for="nombre">Apellido</label>
+                        <input type="text" class="input-form"   placeholder="Texto corto no menor a 3 letras" id="apellido">
+                            <p class="errorApellido" id="errorApellido" style="display:none;color: red;" >Error</p>
+                    </div>    
+                    <div class="form-input"> 
+                        <label class="lbl" for="nombre">Correo Electronico</label>   
+                        <input type="text" class="input-form"   placeholder="Correo electronico" id="correo">
+                        <p class="errorCorreo" id="errorCorreo" style="display:none;color: red;" >Error</p>
+                    </div>
+                    <div class="form-input">
+                        <textarea name="textArea" id="textArea" cols="30" rows="5"></textarea>
+                        <p class="errorTextArea" id="errorTextArea" style="display:none;color: red;" >Error</p>
+                    </div>   
+                </div>    
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-primary"  id="myBtn" value="">Enviar</button>
+                </div>    
+            </form>
+        </div>
+        <footer>
+            <section class="links">
+                <a href="#">Link1</a>
+                <a href="#">Link2</a>
+                <a href="#">Link3</a>
+                <a href="#">Link4</a>
+            </section>
+
+            <div class="social">
+                <a href="#">FB</a>
+                <a href="#">TW</a>
+            </div>
+        </footer>
+    </body>
+</html>        

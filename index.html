@@ -5,132 +5,136 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="./css/reseter.css">
-        <link rel="stylesheet" href="./css/style.css">
-        <script type="module" src="./js/wordle.js"></script>
-        <!-- <script src="./js/anidado.js"></script> -->
+        <link rel="stylesheet" href="./css/wordle/style.css">
+        <script type="module" src="./js/wordle/wordle.js"></script>
         <title>Wordle-Final</title>
     </head>
     <header>
-        <div>Burg</div>
         <div class="header">
-            <h1>WORDLE</h1>
+            <h1>FINAL WORDLE</h1>
         </div>
-        <div class="nav-btn">
-            <button id="play">Jugar</button>
-            <button id="save">Guardar</button>
-            <button id="score">Partidas</button>
-        </div>
+        <nav>
+            <a href="#" id="play">Jugar</a>
+            <a href="#" id="save">Guardar</a>
+            <a href="#" id="score">Partidas</a>
+            <a href="./html/formulario.html" id="contact">Contacto</a>
+        </nav>
     </header>
     <body>
-    <!-- Welcome Modal  -->
-    <div id="modalWelcome" class="modal">
-        <div class="modal_content">
-            <div class="modal-header">
-                <span class="close" id="close">&times;</span>
-            </div>    
-            <div id="table-wrapper">    
-                <div id="table-scroll">
-                   <input class="input-form" id="name" placeholder="Introduzca su nombre" type="text">
+        <!-- Welcome Modal  -->
+        <div id="modalWelcome" class="modal">
+            <div class="modal_content">
+                <div class="modal-header">
+                    <span class="close" id="close">&times;</span>
+                </div>    
+                <div id="table-wrapper">    
+                    <div id="table-scroll">
+                    <input class="input-form" id="name" placeholder="Introduzca su nombre" type="text">
+                    </div>
                 </div>
+                <p class="modal_close" id="go">Comenzar</p>
             </div>
-            <p class="modal_close" id="go">Comenzar</p>
         </div>
-    </div>
-     <!-- Partidas Modal  -->
-    <div id="modalPartidas" class="modal">
-        <div class="modal_content">
-            <div class="modal-header">
-                <span class="close" id="close">&times;</span>
-            </div>    
-            <div id="table-scroll">
-                <table id="tabla">
-                    <thead>
-                        <tr id="tr-partidas">
-                            <th id="numero-partida" style="display: table-cell;">Partida</th>
-                            <th>Nombre</th>
-                            <th id="orden-por-fecha">Fecha</th>
-                            <th id="orden-por-puntaje" style="display: none;">Puntaje ↓</th>
-                        </tr>
-                    </thead>
-                    <tbody id="puntajes">
-                    </tbody>
-                </table>
+        <!-- Partidas Modal  -->
+        <div id="modalPartidas" class="modal">
+            <div class="modal_content">
+                <div class="modal-header">
+                    <span class="close" id="close">&times;</span>
+                </div>    
+                <div id="table-scroll">
+                    <table id="tabla">
+                        <thead>
+                            <tr id="tr-partidas">
+                                <th id="numero-partida" style="display: table-cell;">Partida</th>
+                                <th>Nombre</th>
+                                <th id="orden-por-fecha">Fecha</th>
+                                <th id="orden-por-puntaje" style="display: none;">Puntaje ↓</th>
+                            </tr>
+                        </thead>
+                        <tbody id="puntajes">
+                        </tbody>
+                    </table>
+                </div>
+                <p class="modal_close" id="back">Volver</p>
             </div>
-            <p class="modal_close" id="back">Volver</p>
         </div>
-    </div>
-        <div class="text-hidden" id="count-down-timer"></div>
+        <div class="text-hidden" id="timer">
+            <h2>Bienvenido 
+            <span id="participante"></span>
+            Te Quedan 
+            <span id="count-down-timer"></span></h2>
+        </div>
         <div class="alert-container" data-alert-container></div>
         <div data-guess-grid class="guess-grid">
-          <div class="tile"></div>
-          <div class="tile"></div>
-          <div class="tile"></div>
-          <div class="tile"></div>
-          <div class="tile"></div>
-          <div class="tile"></div>
-          <div class="tile"></div>
-          <div class="tile"></div>
-          <div class="tile"></div>
-          <div class="tile"></div>
-          <div class="tile"></div>
-          <div class="tile"></div>
-          <div class="tile"></div>
-          <div class="tile"></div>
-          <div class="tile"></div>
-          <div class="tile"></div>
-          <div class="tile"></div>
-          <div class="tile"></div>
-          <div class="tile"></div>
-          <div class="tile"></div>
-          <div class="tile"></div>
-          <div class="tile"></div>
-          <div class="tile"></div>
-          <div class="tile"></div>
-          <div class="tile"></div>
-          <div class="tile"></div>
-          <div class="tile"></div>
-          <div class="tile"></div>
-          <div class="tile"></div>
-          <div class="tile"></div>
+            <div class="tile"></div>
+            <div class="tile"></div>
+            <div class="tile"></div>
+            <div class="tile"></div>
+            <div class="tile"></div>
+            <div class="tile"></div>
+            <div class="tile"></div>
+            <div class="tile"></div>
+            <div class="tile"></div>
+            <div class="tile"></div>
+            <div class="tile"></div>
+            <div class="tile"></div>
+            <div class="tile"></div>
+            <div class="tile"></div>
+            <div class="tile"></div>
+            <div class="tile"></div>
+            <div class="tile"></div>
+            <div class="tile"></div>
+            <div class="tile"></div>
+            <div class="tile"></div>
+            <div class="tile"></div>
+            <div class="tile"></div>
+            <div class="tile"></div>
+            <div class="tile"></div>
+            <div class="tile"></div>
+            <div class="tile"></div>
+            <div class="tile"></div>
+            <div class="tile"></div>
+            <div class="tile"></div>
+            <div class="tile"></div>
         </div>
         <div data-keyboard class="keyboard">
-          <button class="key" data-key="Q">Q</button>
-          <button class="key" data-key="W">W</button>
-          <button class="key" data-key="E">E</button>
-          <button class="key" data-key="R">R</button>
-          <button class="key" data-key="T">T</button>
-          <button class="key" data-key="Y">Y</button>
-          <button class="key" data-key="U">U</button>
-          <button class="key" data-key="I">I</button>
-          <button class="key" data-key="O">O</button>
-          <button class="key" data-key="P">P</button>
-          <div class="space"></div>
-          <button class="key" data-key="A">A</button>
-          <button class="key" data-key="S">S</button>
-          <button class="key" data-key="D">D</button>
-          <button class="key" data-key="F">F</button>
-          <button class="key" data-key="G">G</button>
-          <button class="key" data-key="H">H</button>
-          <button class="key" data-key="J">J</button>
-          <button class="key" data-key="K">K</button>
-          <button class="key" data-key="L">L</button>
-          <div class="space"></div>
-          <button data-enter class="key large">Enter</button>
-          <button class="key" data-key="Z">Z</button>
-          <button class="key" data-key="X">X</button>
-          <button class="key" data-key="C">C</button>
-          <button class="key" data-key="V">V</button>
-          <button class="key" data-key="B">B</button>
-          <button class="key" data-key="N">N</button>
-          <button class="key" data-key="M">M</button>
-          <button data-delete class="key large">Delete</button>
+            <button class="key" data-key="Q">Q</button>
+            <button class="key" data-key="W">W</button>
+            <button class="key" data-key="E">E</button>
+            <button class="key" data-key="R">R</button>
+            <button class="key" data-key="T">T</button>
+            <button class="key" data-key="Y">Y</button>
+            <button class="key" data-key="U">U</button>
+            <button class="key" data-key="I">I</button>
+            <button class="key" data-key="O">O</button>
+            <button class="key" data-key="P">P</button>
+            <div class="space"></div>
+            <button class="key" data-key="A">A</button>
+            <button class="key" data-key="S">S</button>
+            <button class="key" data-key="D">D</button>
+            <button class="key" data-key="F">F</button>
+            <button class="key" data-key="G">G</button>
+            <button class="key" data-key="H">H</button>
+            <button class="key" data-key="J">J</button>
+            <button class="key" data-key="K">K</button>
+            <button class="key" data-key="L">L</button>
+            <div class="space"></div>
+            <button data-enter class="key large">Enter</button>
+            <button class="key" data-key="Z">Z</button>
+            <button class="key" data-key="X">X</button>
+            <button class="key" data-key="C">C</button>
+            <button class="key" data-key="V">V</button>
+            <button class="key" data-key="B">B</button>
+            <button class="key" data-key="N">N</button>
+            <button class="key" data-key="M">M</button>
+            <button data-delete class="key large">Delete</button>
         </div>
     </body>
     <footer>
         <div>
             <div class="social">
-                <a href="#">FB</a>
-                <a href="#">TW</a>
+                <a  href="#">FB</a>
+                <a  href="#">TW</a>
             </div>
         </div>
     </footer>

@@ -3,12 +3,13 @@ import {paddedFormat,startCountDown,formatDate} from "./timer.js";
 window.onload= function() { // usar refer en etiqueta script para cargar luego del DOM
     
     localStorage.removeItem('name')
-    /// DECLARACION DE CONSTANTES /////////// 
+    
+    const arrPartidas = localStorage.getItem('lsArray2')?JSON.parse(localStorage.getItem('lsArray2')):[];
     const play = document.querySelector('#play');
     const wordsArray=[];
     const wordWin=[];
     const rr= [];
-    const arrPartidas =[];
+    const participante=document.querySelector('#participante');
     const keyboard = document.querySelector("[data-keyboard]")
     const guessGrid = document.querySelector("[data-guess-grid]") // obtengo la grilla
     const alertContainer = document.querySelector("[data-alert-container]") // contenedor alert msg
@@ -41,7 +42,7 @@ window.onload= function() { // usar refer en etiqueta script para cargar luego d
                                    
     });   
     
-   
+     ////////////////////////////////////   
     /////////// TIMER  COUNTDOWN ///////                        
 
     let time_minutes = 5; 
@@ -49,15 +50,15 @@ window.onload= function() { // usar refer en etiqueta script para cargar luego d
 
     let duration = time_minutes * 60 + time_seconds;
     let elementCountDown = document.querySelector('#count-down-timer');
+    let divTimerr = document.querySelector("#timer")            
     elementCountDown.textContent = `${paddedFormat(time_minutes)}:${paddedFormat(time_seconds)}`;
-    //element.addEventListener('DOMCharacterDataModified',()=>console.log('cambianding'))
 
       ////////////////////////////
      /////////// JUGAR  /////////
     ////////////////////////////
 
     const comenzarPartida = ()=> {
-                    stopInteraction();
+                    cleaning()
                     const name = document.querySelector("#name");
                     if (!name.value) {   
                         return false
@@ -66,12 +67,12 @@ window.onload= function() { // usar refer en etiqueta script para cargar luego d
                     localStorage.setItem('name',name.value)
                     const modal = document.querySelector("#modalWelcome");
                     modal.style.display='none'
-                    elementCountDown.classList.remove('text-hidden')
-                    elementCountDown.classList.add('text-show')
+                    divTimerr.classList.remove('text-hidden')
+                    divTimerr.classList.add('text-show')
                     startInteraction();
                     startCountDown(--duration, elementCountDown);
-                   
-                    
+                    participante.textContent=(localStorage.getItem('name'))
+                        
                 };
 
     const go = document.querySelector("#go");
@@ -80,7 +81,7 @@ window.onload= function() { // usar refer en etiqueta script para cargar luego d
      /////////////////////////////////////
     ////////// GUARDAR PARTIDA //////////
     ////////////////////////////////////
- 
+
     class nuevaPartida {
         constructor(date,name,tablero,wordw,timer) {
             this.date = date;
@@ -116,7 +117,6 @@ window.onload= function() { // usar refer en etiqueta script para cargar luego d
      /////////   CARGAR PARTIDAS  /////////////
     //////////////////////////////////////////
 
-
     const cargarModalPartidas = ()=>{
         const rellenarTable =document.querySelectorAll('[data-guess-grid]')[0].children
         const tbody= document.querySelector('#puntajes');
@@ -137,21 +137,22 @@ window.onload= function() { // usar refer en etiqueta script para cargar luego d
         const trFila = document.querySelectorAll('[data-index]');
         trFila.forEach(element => { 
             element.addEventListener('click',(e)=> {
+                            cleaning()
                             const ind = e.target.dataset.index;
                             this.wordWin=parseArray[ind].wordw; 
                             localStorage.setItem('name',parseArray[ind].name) 
                             let parseTime =parseArray[ind].timer
+                            participante.textContent=(parseArray[ind].name)
                             let spl = parseTime.split(":")
                             let min = parseInt(spl[0])
                             let sec = parseInt(spl[1])
                             let durationSave = min * 60 + sec;
-                            elementCountDown.classList.remove('text-hidden')
-                            elementCountDown.classList.add('text-show')
+                            divTimerr.classList.remove('text-hidden')
+                            divTimerr.classList.add('text-show')
                             elementCountDown.textContent = `${paddedFormat(min)}:${paddedFormat(sec)}`;
                             startCountDown(--durationSave, elementCountDown);
 
                             for (let i = 0; i < parseArray[ind].tablero.length; i++) { 
-                                //debugger
                                 rellenarTable[i].textContent=parseArray[ind].tablero[i].letter
                                 rellenarTable[i].dataset.letter=parseArray[ind].tablero[i].letter
                                 rellenarTable[i].dataset.state=parseArray[ind].tablero[i].state
@@ -167,7 +168,20 @@ window.onload= function() { // usar refer en etiqueta script para cargar luego d
 
     const partidas = document.querySelector('#score'); 
     partidas.addEventListener('click',cargarModalPartidas) 
-    
+
+      ////////////////////////////////////////
+     ////////////     LIMPIAR  //////////////
+    ////////////////////////////////////////
+    const cleaning = ()=>{
+            const childTable =document.querySelectorAll('[data-guess-grid]')[0].children 
+            const toArrChil = [...childTable]
+            toArrChil.map((e)=>{
+                    e.textContent='';
+                    e.removeAttribute("data-letter")
+                    e.removeAttribute("data-state")
+                 })
+    }        
+
       ////////////////////////////////////////
      ////////////     MODAL  ////////////////
     ////////////////////////////////////////
@@ -187,12 +201,13 @@ window.onload= function() { // usar refer en etiqueta script para cargar luego d
         }
     }
    
+      ////////////////////////////////
+     ////////////HANDLERS ///////////
+    ///////////////////////////////
 
-    /////////////////////////////// HANDLERS //////////////////////////////////////////////////////
     const handleMouseClick=(e)=>{
     
                                 if (e.target.matches("[data-key]")) {
-                                    // le envio el valor(letra) que tengo guardado en el data-key
                                     pressKey(e.target.dataset.key)
                                     return
                                 }
@@ -224,18 +239,16 @@ window.onload= function() { // usar refer en etiqueta script para cargar luego d
                                     return
                                 }
                             }                        
-
+     ////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////// FUNCIONES GENERALES ////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////
+
     // Voy agregando clases y atributos a los cuadrantes.
     const startInteraction = ()=>{ document.addEventListener("click", handleMouseClick) 
                                    document.addEventListener("keydown", handleKeyPress)}
     // Hago inversa , se los remuevo.
     const stopInteraction = ()=> { document.removeEventListener("click", handleMouseClick)
                                    document.removeEventListener("keydown", handleKeyPress)}                  
-
-    //Inicializo capturando los eventos de CLICK y TECLADO
-    // startInteraction(); // INICIALIZADOR
-    /// FUNCIONES LLAMADAS DESDE EL NAVEGADOR
 
     // obtengo un Nodelist de los div activos  
     const getActiveDiv =()=>guessGrid.querySelectorAll('[data-state="active"]');
@@ -251,7 +264,6 @@ window.onload= function() { // usar refer en etiqueta script para cargar luego d
                         }
 
     const pressKey=(key)=>{
-                            // div tabla
                             const activeTilesDiv = getActiveDiv() // cero la primera vez , va incrementando
                             if (activeTilesDiv.length >= WORD_LENGTH) return // retorno temprano si hay mas de 5 activos
                             const nextTile = guessGrid.querySelector(":not([data-letter])") //1ra vez inexistente y devuelve el 1er cuadrante
@@ -335,7 +347,6 @@ window.onload= function() { // usar refer en etiqueta script para cargar luego d
     {
         if (guess === ww) {
             showAlert("You Win", 5000)
-            danceTiles(tiles)
             stopInteraction()
             return
         }
@@ -346,21 +357,6 @@ window.onload= function() { // usar refer en etiqueta script para cargar luego d
             stopInteraction()
         }
     }
-    function danceTiles(tiles) 
-    {
-        tiles.forEach((tile, index) => {
-            setTimeout(() => {
-            tile.classList.add("dance")
-            tile.addEventListener(
-                "animationend",
-                () => {
-                tile.classList.remove("dance")
-                },
-                { once: true }
-            )
-            }, (index * DANCE_ANIMATION_DURATION) / 5)
-        })
-    }
     
     function showAlert(message, duration = 1000) 
     {
@@ -369,7 +365,6 @@ window.onload= function() { // usar refer en etiqueta script para cargar luego d
         alertDiv.classList.add("alert")
         alertContainer.prepend(alertDiv)
         if (duration == null) return
-        // muestro el mensaje durante 5seg 
         setTimeout(() => {
             alertDiv.classList.add("hide")
             alertDiv.addEventListener("transitionend", () => {
@@ -387,4 +382,4 @@ window.onload= function() { // usar refer en etiqueta script para cargar luego d
  
 
 
-} // cierro window.onload
+} 

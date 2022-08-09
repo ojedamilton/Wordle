@@ -10,17 +10,19 @@ export function startCountDown(duration, element) {
     let min = 0;
     let sec = 0;
 
-    let countInterval = setInterval(function () {
+    var countInterval = setInterval(function () {  // arranca
 
-        min = parseInt(secondsRemaining / 60);
-        sec = parseInt(secondsRemaining % 60);
+        min = parseInt(secondsRemaining / 60);   // paso a minutos el tiempo
+        sec = parseInt(secondsRemaining % 60);   // paso a segundos
 
-        element.textContent = `${paddedFormat(min)}:${paddedFormat(sec)}`;
-        secondsRemaining = secondsRemaining - 1;
+        element.textContent = `${paddedFormat(min)}:${paddedFormat(sec)}`; // voy pintando
+        secondsRemaining = secondsRemaining - 1; // segundos acumulados decrecientemente
         if (secondsRemaining < 0) { clearInterval(countInterval) };
-        //if (element.textContent=='00:00') console.log('You lose it');      
-
     }, 1000);
+}
+
+export function emptyStart(cero,elem){
+    startCountDown(cero,elem)
 }
 
 ////////// DATE ////////////////////
