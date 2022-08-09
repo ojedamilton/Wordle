@@ -340,7 +340,7 @@ th, td {
     cursor: pointer;
 }
 
-.data-partida-guardadas:hover{
+.data-partida-index:hover{
     background-color: grey;
     cursor: pointer;
 }

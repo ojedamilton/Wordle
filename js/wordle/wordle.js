@@ -62,6 +62,7 @@ window.onload= function() { // usar refer en etiqueta script para cargar luego d
                     containerTime.innerHTML=temporizador
                     const name = document.querySelector("#name");
                     if (!name.value) {   
+                        showAlert('Ingresar Nombre')
                         return false
                     }
                     // almaceno nombre el LocalStorage
@@ -127,48 +128,54 @@ window.onload= function() { // usar refer en etiqueta script para cargar luego d
         const getLsArray = localStorage.getItem('lsArray2')
         const parseArray = JSON.parse(getLsArray)
         let tr='';
-        parseArray.map((elem,ind)=>{
-           tr+=`<tr class="fila-partidas-guardadas" role="row">
-                    <td class="data-partida-guardadas" data-index="${ind}">${ind+1}</td>
-                    <td class="data-partida-guardadas" data-label="nombre">${elem.name}</td>
-                    <td class="data-partida-guardadas" data-label="fecha">${elem.date}</td>
-                 </tr>`;
+        if (getLsArray) {
 
-        });
-        tbody.innerHTML=tr;
-        mostrarModal('modalPartidas'); 
+            parseArray.map((elem,ind)=>{
+            tr+=`<tr class="fila-partidas-guardadas" role="row">
+                        <td class="data-partida-index" data-index="${ind}">${ind+1}</td>
+                        <td class="data-partida-guardadas" data-label="nombre">${elem.name}</td>
+                        <td class="data-partida-guardadas" data-label="fecha">${elem.date}</td>
+                    </tr>`;
+
+            });
+            tbody.innerHTML=tr;
+            mostrarModal('modalPartidas'); 
+            const modal = document.querySelector('#modalPartidas');
+            const trFila = document.querySelectorAll('[data-index]');
+            trFila.forEach(element => { 
+                element.addEventListener('click',(e)=> {
+                                cleaning()
+                                const ind = e.target.dataset.index;
+                                this.wordWin=parseArray[ind].wordw; 
+                                localStorage.setItem('name',parseArray[ind].name) 
+                                let parseTime =parseArray[ind].timer
+                                participante.textContent=(parseArray[ind].name)
+                                let spl = parseTime.split(":")
+                                let min = parseInt(spl[0])
+                                let sec = parseInt(spl[1])
+                                let elementCountDown = document.querySelector('#count-down-timer');
+                                let divTimerr = document.querySelector("#timer")            
+                                elementCountDown.textContent = `${paddedFormat(time_minutes)}:${paddedFormat(time_seconds)}`
+                                let durationSave = min * 60 + sec;
+                                divTimerr.classList.remove('text-hidden')
+                                divTimerr.classList.add('text-show')
+                                elementCountDown.textContent = `${paddedFormat(min)}:${paddedFormat(sec)}`;
+                                startCountDown(--durationSave, elementCountDown);
+
+                                for (let i = 0; i < parseArray[ind].tablero.length; i++) { 
+                                    rellenarTable[i].textContent=parseArray[ind].tablero[i].letter
+                                    rellenarTable[i].dataset.letter=parseArray[ind].tablero[i].letter
+                                    rellenarTable[i].dataset.state=parseArray[ind].tablero[i].state
+                                }
+                                startInteraction();
+                                modal.style.display = "none";
+                            }); 
+            });
+           
+        }else{
+            mostrarModal('modalPartidas');
+        }
         const modal = document.querySelector('#modalPartidas');
-        const trFila = document.querySelectorAll('[data-index]');
-        trFila.forEach(element => { 
-            element.addEventListener('click',(e)=> {
-                            cleaning()
-                            const ind = e.target.dataset.index;
-                            this.wordWin=parseArray[ind].wordw; 
-                            localStorage.setItem('name',parseArray[ind].name) 
-                            let parseTime =parseArray[ind].timer
-                            participante.textContent=(parseArray[ind].name)
-                            let spl = parseTime.split(":")
-                            let min = parseInt(spl[0])
-                            let sec = parseInt(spl[1])
-                            let elementCountDown = document.querySelector('#count-down-timer');
-                            let divTimerr = document.querySelector("#timer")            
-                            elementCountDown.textContent = `${paddedFormat(time_minutes)}:${paddedFormat(time_seconds)}`
-                            let durationSave = min * 60 + sec;
-                            divTimerr.classList.remove('text-hidden')
-                            divTimerr.classList.add('text-show')
-                            elementCountDown.textContent = `${paddedFormat(min)}:${paddedFormat(sec)}`;
-                            startCountDown(--durationSave, elementCountDown);
-
-                            for (let i = 0; i < parseArray[ind].tablero.length; i++) { 
-                                rellenarTable[i].textContent=parseArray[ind].tablero[i].letter
-                                rellenarTable[i].dataset.letter=parseArray[ind].tablero[i].letter
-                                rellenarTable[i].dataset.state=parseArray[ind].tablero[i].state
-                            }
-                            startInteraction();
-                            modal.style.display = "none";
-                        }); 
-        });
-
         const back = document.querySelector('#back')
         back.addEventListener('click',()=> modal.style.display='none')
     }
