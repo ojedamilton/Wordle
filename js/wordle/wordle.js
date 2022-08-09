@@ -3,9 +3,9 @@ import {paddedFormat,startCountDown,formatDate} from "./timer.js";
 window.onload= function() { // usar refer en etiqueta script para cargar luego del DOM
     
     localStorage.removeItem('name')
-    
     const arrPartidas = localStorage.getItem('lsArray2')?JSON.parse(localStorage.getItem('lsArray2')):[];
     const play = document.querySelector('#play');
+    const containerTime=document.querySelector('#timer-container')
     const wordsArray=[];
     const wordWin=[];
     const rr= [];
@@ -14,7 +14,7 @@ window.onload= function() { // usar refer en etiqueta script para cargar luego d
     const guessGrid = document.querySelector("[data-guess-grid]") // obtengo la grilla
     const alertContainer = document.querySelector("[data-alert-container]") // contenedor alert msg
     const WORD_LENGTH = 5
-    const SEARCH_TOTAL = 100
+    const SEARCH_TOTAL = 1000
     const FLIP_ANIMATION_DURATION = 500
     const DANCE_ANIMATION_DURATION = 500
     ////// LLAMADA A LA API /////////////////
@@ -47,18 +47,19 @@ window.onload= function() { // usar refer en etiqueta script para cargar luego d
 
     let time_minutes = 5; 
     let time_seconds = 0; 
-
     let duration = time_minutes * 60 + time_seconds;
     let elementCountDown = document.querySelector('#count-down-timer');
     let divTimerr = document.querySelector("#timer")            
-    elementCountDown.textContent = `${paddedFormat(time_minutes)}:${paddedFormat(time_seconds)}`;
-
+    elementCountDown.textContent = `${paddedFormat(time_minutes)}:${paddedFormat(time_seconds)}`
+   
+   
       ////////////////////////////
      /////////// JUGAR  /////////
     ////////////////////////////
 
     const comenzarPartida = ()=> {
                     cleaning()
+                    containerTime.innerHTML=temporizador
                     const name = document.querySelector("#name");
                     if (!name.value) {   
                         return false
@@ -67,6 +68,9 @@ window.onload= function() { // usar refer en etiqueta script para cargar luego d
                     localStorage.setItem('name',name.value)
                     const modal = document.querySelector("#modalWelcome");
                     modal.style.display='none'
+                    let elementCountDown = document.querySelector('#count-down-timer');
+                    let divTimerr = document.querySelector("#timer")            
+                    elementCountDown.textContent = `${paddedFormat(time_minutes)}:${paddedFormat(time_seconds)}`
                     divTimerr.classList.remove('text-hidden')
                     divTimerr.classList.add('text-show')
                     startInteraction();
@@ -146,6 +150,9 @@ window.onload= function() { // usar refer en etiqueta script para cargar luego d
                             let spl = parseTime.split(":")
                             let min = parseInt(spl[0])
                             let sec = parseInt(spl[1])
+                            let elementCountDown = document.querySelector('#count-down-timer');
+                            let divTimerr = document.querySelector("#timer")            
+                            elementCountDown.textContent = `${paddedFormat(time_minutes)}:${paddedFormat(time_seconds)}`
                             let durationSave = min * 60 + sec;
                             divTimerr.classList.remove('text-hidden')
                             divTimerr.classList.add('text-show')
@@ -180,7 +187,15 @@ window.onload= function() { // usar refer en etiqueta script para cargar luego d
                     e.removeAttribute("data-letter")
                     e.removeAttribute("data-state")
                  })
-    }        
+    } 
+    /// LIMPIAR TECLADO ///
+    
+    const temporizador =`<div class="text-hidden" id="timer">
+                            <h2>Bienvenido 
+                            <span id="participante"></span>
+                                Te Quedan 
+                            <span id="count-down-timer"></span></h2>
+                        </div>`
 
       ////////////////////////////////////////
      ////////////     MODAL  ////////////////
@@ -211,9 +226,7 @@ window.onload= function() { // usar refer en etiqueta script para cargar luego d
                                     pressKey(e.target.dataset.key)
                                     return
                                 }
-                                if (e.target.matches("[data-enter]")) {
-                                    // envio el palabra 
-                                   
+                                if (e.target.matches("[data-enter]")) {  
                                     submitGuess(this.wordsArray)
                                     return
                                 }
@@ -243,14 +256,12 @@ window.onload= function() { // usar refer en etiqueta script para cargar luego d
     /////////////////////////////////// FUNCIONES GENERALES ////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////
 
-    // Voy agregando clases y atributos a los cuadrantes.
     const startInteraction = ()=>{ document.addEventListener("click", handleMouseClick) 
                                    document.addEventListener("keydown", handleKeyPress)}
     // Hago inversa , se los remuevo.
     const stopInteraction = ()=> { document.removeEventListener("click", handleMouseClick)
                                    document.removeEventListener("keydown", handleKeyPress)}                  
 
-    // obtengo un Nodelist de los div activos  
     const getActiveDiv =()=>guessGrid.querySelectorAll('[data-state="active"]');
 
     const deleteKey =()=> 
@@ -267,25 +278,21 @@ window.onload= function() { // usar refer en etiqueta script para cargar luego d
                             const activeTilesDiv = getActiveDiv() // cero la primera vez , va incrementando
                             if (activeTilesDiv.length >= WORD_LENGTH) return // retorno temprano si hay mas de 5 activos
                             const nextTile = guessGrid.querySelector(":not([data-letter])") //1ra vez inexistente y devuelve el 1er cuadrante
-                            nextTile.dataset.letter = key.toLowerCase() // seteo el data-letter con la key
-                            //nextTile.style.color='blue'        
+                            nextTile.dataset.letter = key.toLowerCase() // seteo el data-letter con la key     
                             nextTile.textContent = key // le pongo valor
                             nextTile.dataset.state = "active"  // aca lo activo por 1ra vez
                         } 
 
     function submitGuess(warr,ww) 
                         {
-                            //console.log(ww)
-                            //debugger 
+                          
                             const activeTilesDiv = [...getActiveDiv()] //clono elementos (1er nivel) y lo meto en un array
-                            //console.log([...getActiveDiv()])
                             if (activeTilesDiv.length !== WORD_LENGTH) { // si es distinto de 5 
                                 showAlert("No Hay Suficientes letras")
                                 shakeTiles(activeTilesDiv)
                                 return
                             }
-                            // Uno las letras de la fila y obtengo la palabra
-                            // reduce (accum,val,ind,arr)
+
                             const palabra = activeTilesDiv.reduce((wordAcum, divCurrent) => {
                                 return wordAcum + divCurrent.dataset.letter
                             }, "")
@@ -297,19 +304,13 @@ window.onload= function() { // usar refer en etiqueta script para cargar luego d
                             }
                         
                             stopInteraction();
-            
-                            //forEach(currentValue,index, array)
                             activeTilesDiv.forEach((...params) => flipTile(...params, palabra,ww))
                         
                         }
 
-
-    
     function flipTile(div, index, array, palabra,ww) 
     {
        
-        //console.log(ww)
-        //debugger
         const letter = div.dataset.letter
         const key = keyboard.querySelector(`[data-key="${letter}"i]`)
         setTimeout(() => {
@@ -317,8 +318,6 @@ window.onload= function() { // usar refer en etiqueta script para cargar luego d
         }, (index * FLIP_ANIMATION_DURATION) / 2)
     
         div.addEventListener("transitionend",() => {
-                                                //console.log(cantRepeat)  
-                                              
                                                 div.classList.remove("flip")
                                                 if (ww[index] === letter) {
                                                 div.dataset.state = "correct"
@@ -340,21 +339,26 @@ window.onload= function() { // usar refer en etiqueta script para cargar luego d
                                                 }
                                             },{ once: true }
                             ) 
-                            //console.log(cantRepeat)                  
+           
     }                    
      
     function checkWinLose(guess, tiles,ww) 
     {
         if (guess === ww) {
-            showAlert("You Win", 5000)
+            showAlert("Ganaste !", 5000)
             stopInteraction()
+            divTimerr.remove()
+            cleaning()
             return
         }
     
         const remainingTiles = guessGrid.querySelectorAll(":not([data-letter])")
         if (remainingTiles.length === 0) {
-            showAlert(ww.toUpperCase(), null)
+            showAlert('Perdiste , palabra ganadora es: '+ww.toUpperCase(), 5000)
             stopInteraction()
+            divTimerr.remove()
+            cleaning()
+            return
         }
     }
     
@@ -379,7 +383,5 @@ window.onload= function() { // usar refer en etiqueta script para cargar luego d
             div.addEventListener("animationend",() => {div.classList.remove("shake")},{ once: true })
         })
     }
- 
-
 
 } 

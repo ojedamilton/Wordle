@@ -4,7 +4,7 @@ export function paddedFormat(num) {
     return num < 10 ? "0" + num : num; 
 }
 
-export function startCountDown(duration, element) {
+export function startCountDown(duration, element,flag=false) {
 
     let secondsRemaining = duration;
     let min = 0;
@@ -14,16 +14,17 @@ export function startCountDown(duration, element) {
 
         min = parseInt(secondsRemaining / 60);   // paso a minutos el tiempo
         sec = parseInt(secondsRemaining % 60);   // paso a segundos
-
+         
         element.textContent = `${paddedFormat(min)}:${paddedFormat(sec)}`; // voy pintando
         secondsRemaining = secondsRemaining - 1; // segundos acumulados decrecientemente
         if (secondsRemaining < 0) { clearInterval(countInterval) };
+        if (flag) {
+          clearInterval(countInterval)
+          element.textContent=''
+        }
     }, 1000);
 }
 
-export function emptyStart(cero,elem){
-    startCountDown(cero,elem)
-}
 
 ////////// DATE ////////////////////
 
